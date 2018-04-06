@@ -1,5 +1,5 @@
 {
-  "name": "bowling kata",
+  "name": "bowlingkata",
   "version": "1.0.0",
   "description": "TDD Course: Bowling Kata",
   "main": "game.js",
