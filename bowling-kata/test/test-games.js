@@ -83,7 +83,7 @@ describe('Bowling game 3', function() {
     expect(game.getScore()).to.equal(60);
   });
 
-  it('fame 4, 8 + 2 pins => score: 88', () => {
+  it('fame 4, 8 + 2 pins (spare) => score: 88', () => {
     game.roll(8);
     game.roll(2);
 
@@ -229,5 +229,11 @@ describe('Bowling game 7', function() {
     game.roll(10);
 
     expect(game.getScore()).to.equal(300);
+  });
+
+  it('Should start from 0 => score: 0', () => {
+    game.roll(0);
+
+    expect(game.getScore()).to.equal(0);
   });
 });

@@ -1,17 +1,15 @@
 class Game {
   constructor() {
-    this.frame = 0;
-    this.balls = 2;
-    this.score = 0;
-    this.pins = 0;
-    this.strikes = [];
-    this.spare = false;
-    this.scores = Array(10).fill(0);
+    this.resetGame();
   }
 
   roll(pins) {
     // Next ball
-    this.balls--;
+    this.currentBall++;
+
+    if (this.currentBall > this.maxBalls) {
+      this.resetGame();
+    }
 
     this.pins += pins;
     this.scores[this.frame] += pins;
@@ -22,8 +20,8 @@ class Game {
       this.spare = false;
     }
 
-    if (this.strikes.length) {
-      this.strikes = this.strikes.filter(strike => {
+    if (this.bonusPoints.length) {
+      this.bonusPoints = this.bonusPoints.filter(strike => {
         this.scores[strike.frame] += pins;
 
         strike.balls--;
@@ -31,28 +29,60 @@ class Game {
       });
     }
 
-    if (this.pins === 10 || this.balls < 1) {
-      if (this.balls === 1 && pins === 10) {
-        this.strikes.push({
+    if (this.pins === 10 || this.currentBall >= this.maxBalls) {
+      if (this.pins === 10 && !this.isLastRoll()) {
+        this.bonusPoints.push({
           frame: this.frame,
-          balls: 2,
+          balls: this.currentBall === 1 ? 2 : 1, // Strike or Spare?
         });
       }
-      this.spare = this.balls < 1 && this.pins === 10;
-
-      this.pins = 0;
-      this.balls = this.frame < 8 ? 2 : 3;
 
       if (this.frame < 9) {
         this.frame++;
+
+        this.currentBall = 0;
       }
+
+      this.pins = 0;
     }
   }
 
+  /**
+   * Check if the current roll is the last one, if so don't need to add any
+   * extra point to the last frame itself.
+   */
+  isLastRoll() {
+    if (this.frame === 9 && this.currentBall <= 2) {
+      this.maxBalls = 3;
+    }
+
+    return this.frame === 9;
+  }
+
+  /**
+   * Reset the game variables
+   */
+  resetGame() {
+    this.frame = 0;
+    this.currentBall = 0;
+    this.maxBalls = 2;
+    this.score = 0;
+    this.pins = 0;
+    this.bonusPoints = [];
+    this.spare = false;
+    this.scores = Array(10).fill(0);
+  }
+
+  /**
+   * The current score
+   */
   getScore() {
     return this.scores.reduce((total, num) => total + num, 0);
   }
 
+  /**
+   * Log the frame's score
+   */
   getFrames() {
     console.log(this.scores);
   }
