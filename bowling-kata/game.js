@@ -14,12 +14,7 @@ class Game {
     this.pins += pins;
     this.scores[this.frame] += pins;
 
-    if (this.spare) {
-      this.scores[this.frame - 1] += pins;
-
-      this.spare = false;
-    }
-
+    // Any bonus Strike / Spare to calculate?
     if (this.bonusPoints.length) {
       this.bonusPoints = this.bonusPoints.filter(strike => {
         this.scores[strike.frame] += pins;
